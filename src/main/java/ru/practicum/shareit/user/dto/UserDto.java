@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
+
 @AllArgsConstructor
 @Setter
 @Getter
