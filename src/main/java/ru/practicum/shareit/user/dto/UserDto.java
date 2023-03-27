@@ -9,7 +9,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Setter
 @Getter
-
 public class UserDto {
     private Integer id;
     @Size(max = 20)

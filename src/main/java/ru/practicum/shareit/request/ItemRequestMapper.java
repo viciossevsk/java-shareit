@@ -1,6 +1,5 @@
 package ru.practicum.shareit.request;
 
-import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 public class ItemRequestMapper {
