@@ -19,7 +19,6 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User createUser(User user) {
-        validate(user);
         user.setId(++generatorId);
         users.put(generatorId, user);
         log.info(stringToGreenColor("create user..." + user.toString()));
@@ -27,9 +26,14 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> getAllUser() {
+    public List<User> getAllUsers() {
         log.info(stringToGreenColor("get all user..."));
         return new ArrayList<>(users.values());
+    }
+
+    @Override
+    public Boolean checkUserExist(Integer userId) {
+        return Optional.of(getUserById(userId)).isPresent();
     }
 
     @Override
@@ -41,7 +45,17 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getUserById(Integer userId) {
         if (userId != null) {
-            return Optional.of(users.get(userId)).orElseThrow(() -> new UserNotFoundException(String.format("user with id=%s", userId)));
+            return Optional.of(users.get(userId)).orElseThrow(() -> new UserNotFoundException("user id not found"));
+
+
+//            for (User user : users.values()){
+//                if (user.getId() == userId) {
+//                    return user;
+//                }
+//            }
+//            throw new UserNotFoundException("user id not found");
+
+
         } else {
             throw new UserNotFoundException("user id not found");
         }
@@ -49,23 +63,14 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User updateUser(User user, Integer userId) {
-        User userInMap = getUserById(userId);
-        user.setId(userId);
-        if (user.getEmail() != null) {
-            validate(user);
-            userInMap.setEmail(user.getEmail());
-        }
-        if (user.getName() != null) {
-            userInMap.setName(user.getName());
-        }
-
-        users.replace(userId, userInMap);
-        log.info(stringToGreenColor("update user..." + userInMap.toString()));
-        return userInMap;
+        users.replace(userId, user);
+        log.info(stringToGreenColor("update user..." + user.toString()));
+        return user;
     }
 
-    private void validate(User user) {
-        if ((user.getEmail() == null) || (user.getEmail().isEmpty()) || (!user.getEmail().contains("@"))) {
+    @Override
+    public void validate(User user) {
+        if (user.getEmail() == null) {
             throw new ValidationException("user email invalid");
         }
         for (User userInMap : users.values()) {

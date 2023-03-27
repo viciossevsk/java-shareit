@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
@@ -14,6 +17,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Setter
 @Getter
+@ToString
 public class Item {
     private Integer id;
     @NotNull
@@ -21,7 +25,9 @@ public class Item {
     @Size(max = 20)
     private String name;
     private String description;
-    private boolean available;
+    @NotNull
+    @NotBlank
+    private Boolean available;
 
     private ItemRequest request;
     @NotNull

@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -15,12 +13,9 @@ import javax.validation.constraints.Size;
 @Setter
 @Getter
 public class ItemDto {
-    @NotNull
-    @NotBlank
+    private Integer id;
     @Size(max = 20)
     private String name;
-    @NotNull
-    @NotBlank
     private String description;
-    private boolean available;
+    private Boolean available;
 }
