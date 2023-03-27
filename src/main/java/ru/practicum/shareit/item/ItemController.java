@@ -45,7 +45,7 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> searchItemByText(@RequestHeader(USER_ID_HEADER) Integer userId, @RequestParam String text) {
-        return itemService.searchItemByName(userId, text);
+        return itemService.searchItemByText(userId, text);
     }
 
 }

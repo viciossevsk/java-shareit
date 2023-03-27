@@ -20,7 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User createUser(User user) {
         user.setId(++generatorId);
         users.put(generatorId, user);
-        log.info(stringToGreenColor("create user..." + user.toString()));
+        log.info(stringToGreenColor("create user..." + user));
         return user;
     }
 
@@ -28,11 +28,6 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> getAllUsers() {
         log.info(stringToGreenColor("get all user..."));
         return new ArrayList<>(users.values());
-    }
-
-    @Override
-    public Boolean checkUserExist(Integer userId) {
-        return Optional.of(getUserById(userId)).isPresent();
     }
 
     @Override
@@ -44,18 +39,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getUserById(Integer userId) {
         if (userId != null) {
-            //    return Optional.of(users.get(userId)).orElseThrow(() -> new UserNotFoundException("user id not
-            //    found"));
-
-
-            for (User user : users.values()) {
-                if (user.getId() == userId) {
-                    return user;
-                }
-            }
-            throw new UserNotFoundException("user id not found");
-
-
+            return Optional.ofNullable(users.get(userId)).orElseThrow(() -> new UserNotFoundException(String.format(
+                    "user id=%s not found", userId)));
         } else {
             throw new UserNotFoundException("user id not found");
         }
@@ -64,14 +49,14 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User updateUser(User user, Integer userId) {
         users.replace(userId, user);
-        log.info(stringToGreenColor("update user..." + user.toString()));
+        log.info(stringToGreenColor("update user..." + user));
         return user;
     }
 
     @Override
     public void checkEmailIsDublicate(Integer userId, String email) {
         for (User userInMap : users.values()) {
-            if ((userInMap.getEmail().equals(email)) && (userInMap.getId() != userId)) {
+            if ((userInMap.getEmail().equals(email)) && (!userInMap.getId().equals(userId))) {
                 throw new ConflictException(String.format("email %s already belongs to user %s", email,
                                                           userInMap.getName()));
             }

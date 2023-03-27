@@ -20,14 +20,14 @@ public class ItemRepositoryImpl implements ItemRepository {
     public Item createItem(Item item) {
         item.setId(++generatorId);
         items.put(generatorId, item);
-        log.info(stringToGreenColor("create item..." + item.toString()));
+        log.info(stringToGreenColor("create item..." + item));
         return item;
     }
 
     @Override
     public Item updateItem(Item item, Integer itemId) {
         items.replace(itemId, item);
-        log.info(stringToGreenColor("update item..." + item.toString()));
+        log.info(stringToGreenColor("update item..." + item));
         return item;
     }
 

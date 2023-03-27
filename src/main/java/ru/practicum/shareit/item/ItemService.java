@@ -50,29 +50,16 @@ public class ItemService {
         return ItemMapper.toItemDto(itemRepository.updateItem(itemInMap, itemId));
     }
 
-//    public ItemDto getItem(Integer itemId, Integer userId) {
-//        User user = userRepository.getUserById(userId);
-//        Item itemInMap = itemRepository.getItemById(itemId);
-//        if (!user.equals(itemInMap.getOwner())) {
-//            throw new ItemNotFoundException(String.format("The item id %s has a different owner", itemId));
-//        }
-//        return ItemMapper.toItemDto(itemInMap);
-//    }
-//
-//    public List<ItemDto> getAllItems() {
-//        return itemRepository.getAllItems().stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
-//    }
-
     public List<ItemDto> getAllItemsByUser(Integer userId) {
-        return itemRepository.getAllItems().stream().filter(item -> item.getOwner().getId() == userId).map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return itemRepository.getAllItems().stream().filter(item -> item.getOwner().getId().equals(userId)).map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     public void deleteItem(Integer userId, Integer itemId) {
         itemRepository.deleteItem(userId, itemId);
     }
 
-    public List<ItemDto> searchItemByName(Integer userId, String text) {
-        userRepository.checkUserExist(userId);
+    public List<ItemDto> searchItemByText(Integer userId, String text) {
+        User user = userRepository.getUserById(userId);
         if (text == null || text.isBlank()) {
             return List.of();
         }
