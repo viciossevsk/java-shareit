@@ -50,18 +50,18 @@ public class ItemService {
         return ItemMapper.toItemDto(itemRepository.updateItem(itemInMap, itemId));
     }
 
-    public ItemDto getItem(Integer itemId, Integer userId) {
-        User user = userRepository.getUserById(userId);
-        Item itemInMap = itemRepository.getItemById(itemId);
-        if (!user.equals(itemInMap.getOwner())) {
-            throw new ItemNotFoundException(String.format("The item id %s has a different owner", itemId));
-        }
-        return ItemMapper.toItemDto(itemInMap);
-    }
-
-    public List<ItemDto> getAllItems() {
-        return itemRepository.getAllItems().stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
-    }
+//    public ItemDto getItem(Integer itemId, Integer userId) {
+//        User user = userRepository.getUserById(userId);
+//        Item itemInMap = itemRepository.getItemById(itemId);
+//        if (!user.equals(itemInMap.getOwner())) {
+//            throw new ItemNotFoundException(String.format("The item id %s has a different owner", itemId));
+//        }
+//        return ItemMapper.toItemDto(itemInMap);
+//    }
+//
+//    public List<ItemDto> getAllItems() {
+//        return itemRepository.getAllItems().stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+//    }
 
     public List<ItemDto> getAllItemsByUser(Integer userId) {
         return itemRepository.getAllItems().stream().filter(item -> item.getOwner().getId() == userId).map(ItemMapper::toItemDto).collect(Collectors.toList());

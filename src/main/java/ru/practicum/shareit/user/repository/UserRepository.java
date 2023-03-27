@@ -15,7 +15,8 @@ public interface UserRepository {
 
     void deleteUserById(Integer userId);
 
-    void validate(User user);
+    // void validate(User user);
+    void checkEmailIsDublicate(Integer userId, String email);
 
     Boolean checkUserExist(Integer userId);
 }

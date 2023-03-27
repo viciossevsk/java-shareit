@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.UserNotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.User;
 
 import java.util.*;
@@ -45,15 +44,16 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getUserById(Integer userId) {
         if (userId != null) {
-            return Optional.of(users.get(userId)).orElseThrow(() -> new UserNotFoundException("user id not found"));
+            //    return Optional.of(users.get(userId)).orElseThrow(() -> new UserNotFoundException("user id not
+            //    found"));
 
 
-//            for (User user : users.values()){
-//                if (user.getId() == userId) {
-//                    return user;
-//                }
-//            }
-//            throw new UserNotFoundException("user id not found");
+            for (User user : users.values()) {
+                if (user.getId() == userId) {
+                    return user;
+                }
+            }
+            throw new UserNotFoundException("user id not found");
 
 
         } else {
@@ -69,13 +69,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void validate(User user) {
-        if (user.getEmail() == null) {
-            throw new ValidationException("user email invalid");
-        }
+    public void checkEmailIsDublicate(Integer userId, String email) {
         for (User userInMap : users.values()) {
-            if ((userInMap.getEmail().equals(user.getEmail())) && (userInMap.getId() != user.getId())) {
-                throw new ConflictException(String.format("email %s already belongs to user %s", user.getEmail(),
+            if ((userInMap.getEmail().equals(email)) && (userInMap.getId() != userId)) {
+                throw new ConflictException(String.format("email %s already belongs to user %s", email,
                                                           userInMap.getName()));
             }
         }
