@@ -19,17 +19,19 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final ItemMapper itemMapper;
+
 
     public ItemDto getItemById(Integer itemId) {
-        return ItemMapper.toItemDto(itemRepository.getItemById(itemId));
+        return itemMapper.toItemDto(itemRepository.getItemById(itemId));
     }
 
     public ItemDto createItem(ItemDto itemDto, Integer userId) {
         User user = userRepository.getUserById(userId);
         validate(itemDto);
-        Item item = ItemMapper.toItem(itemDto);
+        Item item = itemMapper.toItem(itemDto);
         item.setOwner(user);
-        return ItemMapper.toItemDto(itemRepository.createItem(item));
+        return itemMapper.toItemDto(itemRepository.createItem(item));
     }
 
     public ItemDto updateItem(ItemDto itemDto, Integer itemId, Integer userId) {
@@ -47,11 +49,11 @@ public class ItemService {
         if (itemDto.getAvailable() != null) {
             itemInMap.setAvailable(itemDto.getAvailable());
         }
-        return ItemMapper.toItemDto(itemRepository.updateItem(itemInMap, itemId));
+        return itemMapper.toItemDto(itemRepository.updateItem(itemInMap, itemId));
     }
 
     public List<ItemDto> getAllItemsByUser(Integer userId) {
-        return itemRepository.getAllItems().stream().filter(item -> item.getOwner().getId().equals(userId)).map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return itemRepository.getAllItems().stream().filter(item -> item.getOwner().getId().equals(userId)).map(itemMapper::toItemDto).collect(Collectors.toList());
     }
 
     public void deleteItem(Integer userId, Integer itemId) {
@@ -63,7 +65,7 @@ public class ItemService {
         if (text == null || text.isBlank()) {
             return List.of();
         }
-        return itemRepository.getAllItems().stream().filter(item -> isTextContained(text, item)).map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return itemRepository.getAllItems().stream().filter(item -> isTextContained(text, item)).map(itemMapper::toItemDto).collect(Collectors.toList());
     }
 
     private boolean isTextContained(String text, Item item) {

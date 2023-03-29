@@ -38,12 +38,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getUserById(Integer userId) {
-        if (userId != null) {
-            return Optional.ofNullable(users.get(userId)).orElseThrow(() -> new UserNotFoundException(String.format(
-                    "user id=%s not found", userId)));
-        } else {
-            throw new UserNotFoundException("user id not found");
-        }
+        return Optional.ofNullable(users.get(userId)).orElseThrow(() -> new UserNotFoundException(String.format("user id=%s not found", userId)));
     }
 
     @Override

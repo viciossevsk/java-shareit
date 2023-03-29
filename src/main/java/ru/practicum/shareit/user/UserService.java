@@ -14,20 +14,21 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     public UserDto createUser(UserDto userDto) {
         userRepository.checkEmailIsDublicate(null, userDto.getEmail());
         validate(userDto);
-        User user = UserMapper.toUser(userDto);
-        return UserMapper.toUserDto(userRepository.createUser(user));
+        User user = userMapper.toUser(userDto);
+        return userMapper.toUserDto(userRepository.createUser(user));
     }
 
     public List<UserDto> getAllUsers() {
-        return userRepository.getAllUsers().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+        return userRepository.getAllUsers().stream().map(userMapper::toUserDto).collect(Collectors.toList());
     }
 
     public UserDto getUserById(Integer userId) {
-        return UserMapper.toUserDto(userRepository.getUserById(userId));
+        return userMapper.toUserDto(userRepository.getUserById(userId));
     }
 
     public UserDto updateUser(UserDto userDto, Integer userId) {
@@ -40,7 +41,7 @@ public class UserService {
         if (userDto.getName() != null) {
             userInMap.setName(userDto.getName());
         }
-        return UserMapper.toUserDto(userRepository.updateUser(userInMap, userId));
+        return userMapper.toUserDto(userRepository.updateUser(userInMap, userId));
     }
 
     public void deleteUserById(Integer userId) {
