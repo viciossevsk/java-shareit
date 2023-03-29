@@ -14,11 +14,6 @@ public class ItemController {
     private final ItemService itemService;
     private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
-//    @Autowired
-//    public ItemController(ItemService itemService) {
-//        this.itemService = itemService;
-//    }
-
     @PostMapping
     public ItemDto createItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader(USER_ID_HEADER) Integer userId) {
         return itemService.createItem(itemDto, userId);
