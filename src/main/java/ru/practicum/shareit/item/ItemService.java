@@ -76,7 +76,7 @@ public class ItemService {
     }
 
     private void validate(ItemDto itemDto) {
-        if ((itemDto.getName() == null) || (itemDto.getName().isEmpty())) {
+        if (itemDto.getName() == null || itemDto.getName().isEmpty()) {
             throw new ValidationException("Item name invalid");
         }
         if (itemDto.getAvailable() == null) {
