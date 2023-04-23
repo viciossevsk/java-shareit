@@ -24,4 +24,18 @@ public class AddvansedFunctions {
         return ANSI_RED + text + ANSI_RESET;
     }
 
+    public static final String USER_ID_HEADER = "X-Sharer-User-Id";
+
+    public static final String A_ERROR = "error";
+    public static final String LOG_ERROR = "Error message: {}";
+    public static final String SERVER_ERROR = "Server error:";
+    public static final String UNKNOWN_STATE = "Unknown state: %s";
+    public static final String MISTAKEN_ITEM_ID = "Mistaken Item id: %s";
+    public static final String MISTAKEN_USER_ID = "Mistaken user id: %s";
+    public static final String MISTAKEN_OWNER_ID = "Mistaken owner id: %s";
+    public static final String MISTAKEN_BOOKING_ID = "mistaken booking id: %s";
+    public static final String DUPLICATED_EMAIL = "Duplicated email found: %s";
+    public static final String FAILED_TO_FOUND_ENTITY = "Failed to find an entity: %s in database";
+    public static final String ITEM_OWNER_ID_DIFFERENT_OWNER_ID = "The item id %s has a different owner";
+
 }
