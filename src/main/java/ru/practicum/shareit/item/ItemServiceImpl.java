@@ -32,6 +32,7 @@ import static ru.practicum.shareit.otherFunction.AddvansedFunctions.*;
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
+    private final CommentMapper commentMapper;
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -71,8 +72,7 @@ public class ItemServiceImpl implements ItemService {
                 .item(item)
                 .booker(booker)
                 .build();
-        Long id = commentRepository.save(comment).getId();
-        return commentRepository.findCommentDto(id);
+        return commentMapper.toCommentDto(commentRepository.save(comment));
     }
 
     @Override
