@@ -1,5 +1,8 @@
 package ru.practicum.shareit.item.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.user.model.User;
@@ -14,6 +17,7 @@ import java.util.Set;
 @Setter
 @ToString
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "Items", indexes = {
         @Index(name = "idx_item_id", columnList = "id")
 })
@@ -26,14 +30,24 @@ public class Item {
     private String description;
     private Boolean available;
     @ToString.Exclude
+    @JsonManagedReference(value = "item")
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private Set<Booking> bookings;
 
     @ToString.Exclude
+    @JsonBackReference(value = "owner")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
+
+//    @ToString.Exclude
+//    @JsonBackReference(value = "owner")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "request_id", referencedColumnName = "id")
+//    private ItemRequest itemRequest;
+
     @ToString.Exclude
+    @JsonManagedReference(value = "comment")
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private Set<Comment> comments;
 

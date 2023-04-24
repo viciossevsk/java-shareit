@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import ru.practicum.shareit.user.UserController;
@@ -12,7 +11,6 @@ import javax.validation.constraints.Size;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserDto {
     private Long id;
     @Size(max = 20)
