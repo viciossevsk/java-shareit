@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto createUser(UserDto userDto) {
-        validate(userDto, null);
+        validate(userDto);
         User user = userMapper.toUser(userDto);
         return userMapper.toUserDto(userRepository.save(user));
     }
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
-    private void validate(UserDto userDto, Long userId) {
+    private void validate(UserDto userDto) {
         if ((userDto.getName() == null) || (userDto.getName().isEmpty())) {
             throw new ValidationException("User name invalid");
         }
