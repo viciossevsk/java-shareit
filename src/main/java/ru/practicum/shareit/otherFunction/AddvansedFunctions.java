@@ -31,6 +31,7 @@ public class AddvansedFunctions {
     public static final String SERVER_ERROR = "Server error:";
     public static final String UNKNOWN_STATE = "Unknown state: %s";
     public static final String MISTAKEN_ITEM_ID = "Mistaken Item id: %s";
+    public static final String MISTAKEN_ITEM_REQUEST_ID = "Mistaken Item request id: %s";
     public static final String MISTAKEN_USER_ID = "Mistaken user id: %s";
     public static final String MISTAKEN_OWNER_ID = "Mistaken owner id: %s";
     public static final String MISTAKEN_BOOKING_ID = "mistaken booking id: %s";
