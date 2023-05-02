@@ -14,22 +14,22 @@ import static ru.practicum.shareit.otherFunction.AddvansedFunctions.USER_ID_HEAD
 public class ItemRequestController {
     ItemRequestService itemRequestService;
     @PostMapping
-    public ItemRequestDto createItemRequest(@RequestHeader(USER_ID_HEADER) Long ownerId,
+    public ItemRequestDto createItemRequest(@RequestHeader(USER_ID_HEADER) Long requestorId,
                                             @Valid @RequestBody ItemRequestDto itemRequestDto) {
-        return itemRequestService.createItemRequest(ownerId, itemRequestDto);
+        return itemRequestService.createItemRequest(requestorId, itemRequestDto);
     }
     @GetMapping
-    public List<ItemRequestDto> getAllItemRequestByOwner(@RequestHeader(USER_ID_HEADER) Long ownerId) {
-        return itemRequestService.getAllItemRequestByOwner(ownerId);
+    public List<ItemRequestDto> getAllItemRequestByRequestor(@RequestHeader(USER_ID_HEADER) Long requestorId) {
+        return itemRequestService.getAllItemRequestByOwner(requestorId);
     }
     @GetMapping("/all")
-    public List<ItemRequestDto> getItemRequestOtherOwner(@RequestHeader(USER_ID_HEADER) Long ownerId,
+    public List<ItemRequestDto> getItemRequestOtherRequestor(@RequestHeader(USER_ID_HEADER) Long requestorId,
                                                       @RequestParam(value = "from", required = false, defaultValue =
-                                                              "0") Integer indexElement,
+                                                              "0") Integer start,
                                                       @RequestParam(value = "size", required = false, defaultValue =
-                                                              "20") Integer sizeElements
+                                                              "20") Integer size
     ) {
-        return itemRequestService.getItemRequestOtherOwner(ownerId, indexElement, sizeElements);
+        return itemRequestService.getItemRequestOtherRequestor(requestorId, start, size);
     }
     @GetMapping("/{requestId}")
     public ItemRequestDto getItemRequestById(@PathVariable("requestId") Long itemRequestId) {

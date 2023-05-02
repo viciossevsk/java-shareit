@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface ItemRequestService {
 
-    ItemRequestDto createItemRequest(Long ownerId, ItemRequestDto itemRequestDto);
+    ItemRequestDto createItemRequest(Long requestorId, ItemRequestDto itemRequestDto);
 
-    List<ItemRequestDto> getAllItemRequestByOwner(Long ownerId);
+    List<ItemRequestDto> getAllItemRequestByOwner(Long requestorId);
 
-    List<ItemRequestDto> getItemRequestOtherOwner(Long ownerId, Integer indexElement, Integer sizeElements);
+    List<ItemRequestDto> getItemRequestOtherRequestor(Long requestorId, Integer start, Integer size);
 
     ItemRequestDto getItemRequestById(Long itemRequestId);
 }

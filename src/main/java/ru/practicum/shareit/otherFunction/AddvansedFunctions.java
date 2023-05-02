@@ -35,8 +35,6 @@ public class AddvansedFunctions {
     public static final String MISTAKEN_USER_ID = "Mistaken user id: %s";
     public static final String MISTAKEN_OWNER_ID = "Mistaken owner id: %s";
     public static final String MISTAKEN_BOOKING_ID = "mistaken booking id: %s";
-    public static final String DUPLICATED_EMAIL = "Duplicated email found: %s";
-    public static final String FAILED_TO_FOUND_ENTITY = "Failed to find an entity: %s in database";
     public static final String ITEM_OWNER_ID_DIFFERENT_OWNER_ID = "The item id %s has a different owner";
 
 }
