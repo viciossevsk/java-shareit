@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.EntityNotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -17,8 +17,10 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
-
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -34,6 +36,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRepository itemRepository;
     private final ItemRequestMapper itemRequestMapper;
     private final ItemMapper itemMapper;
+
     @Override
     @Transactional
     public ItemRequestDto createItemRequest(Long requestorId, ItemRequestDto itemRequestDto) {
@@ -50,17 +53,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         Map<Long, ItemRequest> requests = itemRequestRepository.findByRequestorId(Requestor.getId()).stream()
                 .collect(Collectors.toMap(ItemRequest::getId, Function.identity()));
 
-    return getItemRequestsDto(requests);
-    }
-
-    private List<ItemRequestDto> getItemRequestsDto(Map<Long, ItemRequest> requests) {
-        Map<Long, List<Item>> items = itemRepository.findAllItemsByRequestIds(requests.keySet()).stream()
-                .collect(Collectors.groupingBy(Item::getRequestId));
-
-        return requests.values().stream()
-                .sorted(Comparator.comparing(ItemRequest::getCreated).reversed())
-                .map(itemRequest -> itemRequestMapper.toItemRequestWithItemsDto((List<ItemDto>) itemMapper.toItemDto((Item) items.getOrDefault(itemRequest.getId(), List.of())), itemRequest))
-                .collect(Collectors.toList());
+        return getItemRequestsDto(requests);
     }
 
     @Override
@@ -77,14 +70,15 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     private void validate(Long RequestorId) {
         userRepository.findById(RequestorId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(MISTAKEN_USER_ID, RequestorId)));
-        }
+                .orElseThrow(() -> new UserNotFoundException(String.format(MISTAKEN_USER_ID, RequestorId)));
+    }
 
     @Override
     public ItemRequestDto getItemRequestById(Long itemRequestId) {
         ItemRequest itemRequest = getItemRequestByItemRequestId(itemRequestId);
         List<Item> items = itemRepository.findAllItemsByRequestIds(Set.of(itemRequest.getId()));
-        return itemRequestMapper.toItemRequestWithItemsDto((List<ItemDto>) itemMapper.toItemDto((Item) items), itemRequest);
+        return itemRequestMapper.toItemRequestWithItemsDto((List<ItemDto>) itemMapper.toItemDto((Item) items),
+                                                           itemRequest);
     }
 
     private ItemRequest getItemRequestByItemRequestId(Long itemRequestId) {
@@ -93,7 +87,18 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(MISTAKEN_USER_ID, userId)));
+                .orElseThrow(() -> new UserNotFoundException(String.format(MISTAKEN_USER_ID, userId)));
     }
+
+    private List<ItemRequestDto> getItemRequestsDto(Map<Long, ItemRequest> requests) {
+        Map<Long, List<Item>> items = itemRepository.findAllItemsByRequestIds(requests.keySet()).stream()
+                .collect(Collectors.groupingBy(Item::getRequestId));
+
+        return requests.values().stream()
+                .sorted(Comparator.comparing(ItemRequest::getCreated).reversed())
+                .map(itemRequest -> itemRequestMapper.toItemRequestWithItemsDto((List<ItemDto>) itemMapper.toItemDto((Item) items.getOrDefault(itemRequest.getId(), List.of())), itemRequest))
+                .collect(Collectors.toList());
+    }
+
 
 }
