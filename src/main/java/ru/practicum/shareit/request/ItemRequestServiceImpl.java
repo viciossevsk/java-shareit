@@ -65,11 +65,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDto> getItemRequestOtherRequestor(Long requestorId, Integer start, Integer size) {
-        if (start < 0 || size <= 0) {
-            throw new ValidationException("Mistaken item request parameters");
-        }
+        PageRequest page = getPage(start, size);
+
         validate(requestorId);
-        PageRequest page = PageRequest.of(start > 0 ? start / size : 0, size);
 
         Map<Long, ItemRequest> requests = itemRequestRepository.findAllExceptUserId(requestorId, page).stream()
                 .collect(Collectors.toMap(ItemRequest::getId, Function.identity()));

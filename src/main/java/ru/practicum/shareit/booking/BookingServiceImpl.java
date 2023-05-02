@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -97,29 +98,33 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDto> getBookerStatistics(Long bookerId, String state) {
+    public List<BookingDto> getBookerStatistics(Long bookerId, String state, Integer start, Integer size) {
         User booker = getUserById(bookerId);
+
+        PageRequest page = getPage(start, size);
 
         Set<Long> bookingIds = booker.getBookings().stream()
                 .map(Booking::getId)
                 .collect(Collectors.toSet());
 
-        Set<Booking> bookings = bookingRepository.findBookingsAndFetchAllEntities(bookingIds);
+        Set<Booking> bookings = bookingRepository.findBookingsAndFetchAllEntities(bookingIds, page);
 
         return getBookingStatistics(bookings, state);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDto> getOwnerStatistics(Long ownerId, String state) {
+    public List<BookingDto> getOwnerStatistics(Long ownerId, String state, Integer start, Integer size) {
         User owner = getUserById(ownerId);
+
+        PageRequest page = getPage(start, size);
 
         Set<Long> bookingIds = owner.getItems().stream()
                 .flatMap(item -> item.getBookings().stream())
                 .map(Booking::getId)
                 .collect(Collectors.toSet());
 
-        Set<Booking> bookings = bookingRepository.findBookingsAndFetchAllEntities(bookingIds);
+        Set<Booking> bookings = bookingRepository.findBookingsAndFetchAllEntities(bookingIds, page);
 
         return getBookingStatistics(bookings, state);
     }

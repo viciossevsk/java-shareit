@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.repository;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,10 +13,11 @@ import java.util.Set;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    Collection<Item> findAllByOwnerId(Long ownerId);
+    Collection<Item> findAllByOwnerId(Long ownerId, PageRequest page);
 
     Collection<Item> findAllByNameIsLikeIgnoreCaseOrDescriptionIsLikeIgnoreCaseAndAvailableTrue(String queryForName,
-                                                                                                String queryForDescription);
+                                                                                                String queryForDescription,
+                                                                                                PageRequest page);
 
     void deleteByIdAndAndOwnerId(Long itemId, Long ownerId);
 

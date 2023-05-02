@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingStatus;
@@ -126,8 +127,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> getAllItemsByOwner(Long ownerId) {
-        Map<Long, Item> items = itemRepository.findAllByOwnerId(ownerId).stream()
+    public List<ItemDto> getAllItemsByOwner(Long ownerId, Integer start, Integer size) {
+        PageRequest page = getPage(start, size);
+
+        Map<Long, Item> items = itemRepository.findAllByOwnerId(ownerId, page).stream()
                 .collect(Collectors.toMap(Item::getId, Function.identity()));
 
         Map<Long, List<CommentDto>> commentDtos = commentRepository.findCommentDtosByItems(items.values()).stream()
@@ -163,13 +166,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> searchItemByText(String text) {
+    public List<ItemDto> searchItemByText(String text, Integer start, Integer size) {
         if (text == null || text.isBlank()) {
             return List.of();
         }
         final String query = "%" + text + "%";
 
-        return itemRepository.findAllByNameIsLikeIgnoreCaseOrDescriptionIsLikeIgnoreCaseAndAvailableTrue(query, query)
+        PageRequest page = getPage(start, size);
+
+        return itemRepository.findAllByNameIsLikeIgnoreCaseOrDescriptionIsLikeIgnoreCaseAndAvailableTrue(query, query, page)
                 .stream()
                 .map(itemMapper::toItemDto)
                 .collect(Collectors.toList());
