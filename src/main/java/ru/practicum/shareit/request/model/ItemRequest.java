@@ -13,7 +13,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@Table(name = "item_requests")
+@Table(name = "requests")
 public class ItemRequest {
 
     @Id

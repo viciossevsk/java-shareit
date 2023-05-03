@@ -11,12 +11,14 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestWithItemsDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -43,42 +45,41 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         User owner = getUserById(requestorId);
         ItemRequest itemRequest = itemRequestMapper.toItemRequest(itemRequestDto);
         itemRequest.setRequestor(owner);
+        itemRequest.setCreated(LocalDateTime.now());
         return itemRequestMapper.toItemRequestDto(itemRequestRepository.save(itemRequest));
     }
 
     @Override
-    public List<ItemRequestDto> getAllItemRequestByOwner(Long requestorId) {
-        User Requestor = getUserById(requestorId);
-
-        Map<Long, ItemRequest> requests = itemRequestRepository.findByRequestorId(Requestor.getId()).stream()
+    public List<ItemRequestWithItemsDto> getAllItemRequestByOwner(Long requestorId) {
+        if (isUserExistsById(requestorId)) {
+            throw new EntityNotFoundException(String.format(MISTAKEN_USER_ID, requestorId));
+        }
+        Map<Long, ItemRequest> requests = itemRequestRepository.findByRequestorId(requestorId).stream()
                 .collect(Collectors.toMap(ItemRequest::getId, Function.identity()));
-
-        return getItemRequestsDto(requests);
+        return getItemRequestsWithItemsDto(requests);
     }
 
     @Override
-    public List<ItemRequestDto> getItemRequestOtherRequestor(Long requestorId, Integer start, Integer size) {
+    public List<ItemRequestWithItemsDto> getItemRequestOtherRequestor(Long requestorId, Integer start, Integer size) {
+        if (isUserExistsById(requestorId)) {
+            throw new EntityNotFoundException(String.format(MISTAKEN_USER_ID, requestorId));
+        }
         PageRequest page = getPage(start, size);
-
-        validate(requestorId);
 
         Map<Long, ItemRequest> requests = itemRequestRepository.findAllExceptUserId(requestorId, page).stream()
                 .collect(Collectors.toMap(ItemRequest::getId, Function.identity()));
 
-        return getItemRequestsDto(requests);
-    }
-
-    private void validate(Long RequestorId) {
-        userRepository.findById(RequestorId)
-                .orElseThrow(() -> new UserNotFoundException(String.format(MISTAKEN_USER_ID, RequestorId)));
+        return getItemRequestsWithItemsDto(requests);
     }
 
     @Override
-    public ItemRequestDto getItemRequestById(Long itemRequestId) {
+    public ItemRequestWithItemsDto getItemRequestById(Long itemRequestId, Long requestorId) {
+        if (isUserExistsById(requestorId)) {
+            throw new EntityNotFoundException(String.format(MISTAKEN_USER_ID, requestorId));
+        }
         ItemRequest itemRequest = getItemRequestByItemRequestId(itemRequestId);
         List<Item> items = itemRepository.findAllItemsByRequestIds(Set.of(itemRequest.getId()));
-        return itemRequestMapper.toItemRequestWithItemsDto((List<ItemDto>) itemMapper.toItemDto((Item) items),
-                                                           itemRequest);
+        return itemRequestMapper.toItemRequestWithItemsDto(itemsToItemsDTO(items), itemRequest);
     }
 
     private ItemRequest getItemRequestByItemRequestId(Long itemRequestId) {
@@ -90,15 +91,21 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .orElseThrow(() -> new UserNotFoundException(String.format(MISTAKEN_USER_ID, userId)));
     }
 
-    private List<ItemRequestDto> getItemRequestsDto(Map<Long, ItemRequest> requests) {
+    private List<ItemRequestWithItemsDto> getItemRequestsWithItemsDto(Map<Long, ItemRequest> requests) {
         Map<Long, List<Item>> items = itemRepository.findAllItemsByRequestIds(requests.keySet()).stream()
                 .collect(Collectors.groupingBy(Item::getRequestId));
 
         return requests.values().stream()
                 .sorted(Comparator.comparing(ItemRequest::getCreated).reversed())
-                .map(itemRequest -> itemRequestMapper.toItemRequestWithItemsDto((List<ItemDto>) itemMapper.toItemDto((Item) items.getOrDefault(itemRequest.getId(), List.of())), itemRequest))
-                .collect(Collectors.toList());
+                .map(itemRequest -> itemRequestMapper.toItemRequestWithItemsDto(itemsToItemsDTO(items.getOrDefault(itemRequest.getId(), List.of())), itemRequest)).collect(Collectors.toList());
     }
 
+    private List<ItemDto> itemsToItemsDTO(List<Item> items) {
+        return items.stream().map(itemMapper::toItemDto).collect(Collectors.toList());
+    }
+
+    private boolean isUserExistsById(Long userId) {
+        return (!userRepository.existsById(userId));
+    }
 
 }
