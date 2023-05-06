@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.shareit.booking.BookingController;
@@ -18,7 +17,6 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class BookingDto {
-    //@JsonProperty("id")
     private Long id;
 
     @NotNull(groups = BookingController.class)

@@ -139,7 +139,7 @@ public class ItemServiceImpl implements ItemService {
         Collection<BookingShortDto> nextBookings = itemRepository.findNextBookings(items.values());
         Collection<BookingShortDto> lastBookings = itemRepository.findLastBookings(items.values());
 
-        return items.values().stream()
+        List<ItemDto> uu = items.values().stream()
                 .sorted(Comparator.comparing(Item::getId))
                 .map(item -> {
                     ItemDto itemDto = itemMapper.toItemDto(item);
@@ -151,11 +151,14 @@ public class ItemServiceImpl implements ItemService {
                                                    .filter(bookingShort -> bookingShort.getItemId().equals(itemDto.getId()))
                                                    .findFirst()
                                                    .orElse(null));
-                    itemDto.setComments(commentDtos.get(itemDto.getId()));
-
+                    if (commentDtos.size() > 0) {
+                        itemDto.setComments(commentDtos.get(itemDto.getId()).stream().collect(Collectors.toSet()));
+                    }
                     return itemDto;
                 })
                 .collect(Collectors.toList());
+
+        return uu;
     }
 
     @Override

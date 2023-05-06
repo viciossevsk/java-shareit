@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
-import java.util.List;
+import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -29,5 +29,5 @@ public class ItemDto {
     private Long requestId;
     private BookingShortDto nextBooking;
     private BookingShortDto lastBooking;
-    private List<CommentDto> comments;
+    private Set<CommentDto> comments;
 }

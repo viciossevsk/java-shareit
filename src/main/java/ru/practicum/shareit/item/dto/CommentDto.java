@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class CommentDto {
     private Long id;
     @NotBlank(message = "Comment text must be specified")
