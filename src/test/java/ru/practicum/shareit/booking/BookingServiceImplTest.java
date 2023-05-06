@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Sql(value = "/testSchema.sql")
-public class BookingSeviceImplTest {
+public class BookingServiceImplTest {
     private final BookingServiceImpl mockBookingServiceImpl;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
     LocalDateTime created = LocalDateTime.parse("2023-06-10T12:00:00", formatter);

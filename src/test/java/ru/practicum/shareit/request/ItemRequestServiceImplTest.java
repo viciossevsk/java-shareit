@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ItemRequestServiceImplTest {
     private final ItemRequestService mockItemRequestService;
     ItemRequestWithItemsDto responseItemRequestDto1;
-    ItemRequestDto requstItemRequestDto3;
+    ItemRequestDto requestItemRequestDto3;
     ItemRequestDto responseItemRequestDto3;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
     long requestorId = 1L;
@@ -35,7 +35,7 @@ public class ItemRequestServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        requstItemRequestDto3 = ItemRequestDto.builder()
+        requestItemRequestDto3 = ItemRequestDto.builder()
                 .description("Хотел бы воспользоваться щёткой для обуви")
                 .build();
 
@@ -56,7 +56,7 @@ public class ItemRequestServiceImplTest {
     @Test
     void createTest_checkData() {
 
-        ItemRequestDto itemRequestDto = mockItemRequestService.createItemRequest(requestorId, requstItemRequestDto3);
+        ItemRequestDto itemRequestDto = mockItemRequestService.createItemRequest(requestorId, requestItemRequestDto3);
         itemRequestDto.setCreated(created);
 
         assertEquals(responseItemRequestDto3.toString(), itemRequestDto.toString());
@@ -74,7 +74,7 @@ public class ItemRequestServiceImplTest {
     @Test
     void getItemRequestOtherRequestor_checkData() {
 
-        ItemRequestDto itemRequestDto = mockItemRequestService.createItemRequest(requestorId, requstItemRequestDto3);
+        ItemRequestDto itemRequestDto = mockItemRequestService.createItemRequest(requestorId, requestItemRequestDto3);
         itemRequestDto.setCreated(created);
         assertEquals(responseItemRequestDto3.toString(), itemRequestDto.toString());
     }

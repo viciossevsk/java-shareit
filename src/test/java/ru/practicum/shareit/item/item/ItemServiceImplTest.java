@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Sql(value = "/testSchema.sql")
 public class ItemServiceImplTest {
     private final ItemServiceImpl mositemServiceImpl;
-    ItemDto requstItemDto2;
+    ItemDto requestItemDto2;
     ItemDto responseItemDto2;
     ItemDto responseItemDto3;
     CommentDto commentDto;
@@ -35,7 +35,7 @@ public class ItemServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        requstItemDto2 = ItemDto.builder()
+        requestItemDto2 = ItemDto.builder()
                 .id(2L)
                 .name("Item2 update")
                 .description("Description")
@@ -75,9 +75,9 @@ public class ItemServiceImplTest {
     @Test
     void updateItem_checkData() {
 
-        ItemDto itemDto = mositemServiceImpl.updateItem(requstItemDto2, itemId, ownerId);
+        ItemDto itemDto = mositemServiceImpl.updateItem(requestItemDto2, itemId, ownerId);
 
-        assertEquals(requstItemDto2.toString(), itemDto.toString());
+        assertEquals(requestItemDto2.toString(), itemDto.toString());
 
     }
 

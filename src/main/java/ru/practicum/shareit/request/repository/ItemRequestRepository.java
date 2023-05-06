@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
 
-    List<ItemRequest> findByRequestorId(Long RequestorId);
+    List<ItemRequest> findByRequestorId(Long requestorId);
 
     @Query(
             "select ir" +
