@@ -37,8 +37,8 @@ VALUES ('WAITING', '2023-06-01T12:00:00', '2023-06-02T12:00:00', 1, 2),
        ('APPROVED', '2023-05-10T12:00:00', '2023-06-10T12:00:00', 1, 2);
 
 INSERT INTO requests (description, created, requestor_id)
-VALUES ('Item description', '2023-08-10T12:00:00', 1),
-       ('Item description2', '2023-08-10T12:00:00', 2);
+VALUES ('description', '2023-06-10T12:00:00', 1),
+       ('description2', '2023-06-10T12:00:00', 2);
 
 INSERT INTO comments (text, author_name, created, item_id, booker_id)
 VALUES ('text_comment', 'user_2', '2023-06-10T12:00:00', 1, 2);
