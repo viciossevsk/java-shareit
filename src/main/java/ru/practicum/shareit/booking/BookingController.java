@@ -40,16 +40,21 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> getBookerStatistics(@RequestHeader(USER_ID_HEADER) Long bookerId,
-                                                @RequestParam(required = false, defaultValue = "ALL") String state) {
+                                                @RequestParam(value = "state", required = false,
+                                                        defaultValue = "ALL") String state,
+                                                @RequestParam(value = "from", required = false, defaultValue = "0") Integer start,
+                                                @RequestParam(value = "size", required = false, defaultValue = "20") Integer size) {
 
-        return bookingService.getBookerStatistics(bookerId, state);
+        return bookingService.getBookerStatistics(bookerId, state, start, size);
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getOwnerStatistics(@RequestHeader(USER_ID_HEADER) Long ownerId,
-                                               @RequestParam(required = false, defaultValue = "ALL") String state) {
+                                               @RequestParam(value = "state", required = false, defaultValue = "ALL") String state,
+                                               @RequestParam(value = "from", required = false, defaultValue = "0") Integer start,
+                                               @RequestParam(value = "size", required = false, defaultValue = "20") Integer size) {
 
-        return bookingService.getOwnerStatistics(ownerId, state);
+        return bookingService.getOwnerStatistics(ownerId, state, start, size);
     }
 
 

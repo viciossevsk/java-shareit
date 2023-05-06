@@ -1,5 +1,8 @@
 package ru.practicum.shareit.otherFunction;
 
+import org.springframework.data.domain.PageRequest;
+import ru.practicum.shareit.exception.ValidationException;
+
 public class AddvansedFunctions {
 
     public static final String ANSI_RESET = "\u001B[0m";
@@ -31,11 +34,17 @@ public class AddvansedFunctions {
     public static final String SERVER_ERROR = "Server error:";
     public static final String UNKNOWN_STATE = "Unknown state: %s";
     public static final String MISTAKEN_ITEM_ID = "Mistaken Item id: %s";
+    public static final String MISTAKEN_ITEM_REQUEST_ID = "Mistaken Item request id: %s";
     public static final String MISTAKEN_USER_ID = "Mistaken user id: %s";
     public static final String MISTAKEN_OWNER_ID = "Mistaken owner id: %s";
     public static final String MISTAKEN_BOOKING_ID = "mistaken booking id: %s";
-    public static final String DUPLICATED_EMAIL = "Duplicated email found: %s";
-    public static final String FAILED_TO_FOUND_ENTITY = "Failed to find an entity: %s in database";
     public static final String ITEM_OWNER_ID_DIFFERENT_OWNER_ID = "The item id %s has a different owner";
+
+    public static final PageRequest getPage(Integer start, Integer size) {
+        if (start < 0 || size <= 0) {
+            throw new ValidationException("Mistaken item request parameters");
+        }
+        return PageRequest.of(start > 0 ? start / size : 0, size);
+    }
 
 }
