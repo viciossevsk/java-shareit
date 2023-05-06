@@ -1,14 +1,17 @@
 package ru.practicum.shareit.request.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
-@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class ItemRequestDto {
     private Long id;
     @NotBlank

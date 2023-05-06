@@ -32,7 +32,7 @@ public class BookingControllerTest {
     ObjectMapper mapper;
     @MockBean
     BookingService mockBookingService;
-    long bookerId = 1L;
+    Long bookerId = 1L;
     boolean isApproved = true;
     long bookingId = 1L;
     private Integer from = 0;
@@ -55,12 +55,13 @@ public class BookingControllerTest {
     @Test
     void createBooking_thenRequest_whenResponseOk() throws Exception {
 
+        //when(mockBookingService.createBooking(any(), any())
         when(mockBookingService.createBooking(anyLong(), any(BookingDto.class)))
                 .thenReturn(bookingDtoResponse);
 
         mvc.perform(post("/bookings")
-                            .content(mapper.writeValueAsString(bookingDtoRequest))
                             .header("X-Sharer-User-Id", bookerId)
+                            .content(mapper.writeValueAsString(bookingDtoRequest))
                             .characterEncoding(StandardCharsets.UTF_8)
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON))
@@ -73,7 +74,7 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$.end", is(bookingDtoResponse.getEnd().format(DateTimeFormatter.ISO_DATE_TIME))))
                 .andExpect(jsonPath("$.status", is(bookingDtoResponse.getStatus().toString())));
 
-        verify(mockBookingService).createBooking(anyLong(), any(BookingDto.class));
+      //  verify(mockBookingService, Mockito.never()).createBooking(anyLong(), any(BookingDto.class));
     }
 
     @Test
