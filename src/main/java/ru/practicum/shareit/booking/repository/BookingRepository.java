@@ -15,15 +15,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                     " from Booking b" +
                     " join fetch b.item" +
                     " join fetch b.booker" +
-                    " where b.id in :bookingIds"
-    )
-    Set<Booking> findBookingsAndFetchAllEntities(@Param("bookingIds") Set<Long> bookingIds, PageRequest page);
-
-    @Query(
-            "select b" +
-                    " from Booking b" +
-                    " join fetch b.item" +
-                    " join fetch b.booker" +
                     " where b.id in :bookingIds" +
                     " order by b.id desc"
     )
