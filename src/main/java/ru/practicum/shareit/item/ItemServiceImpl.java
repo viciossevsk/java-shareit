@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.exception.EntityNotFoundException;
-import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -103,9 +102,6 @@ public class ItemServiceImpl implements ItemService {
         Item item = getItemByItemId(itemId);
         item.setOwner(owner);
 
-        if (!owner.equals(item.getOwner())) {
-            throw new ItemNotFoundException(String.format(ITEM_OWNER_ID_DIFFERENT_OWNER_ID, itemId));
-        }
         if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
         }

@@ -50,6 +50,7 @@ class ItemServiceImplTest {
     @InjectMocks
     private ItemServiceImpl itemService;
     private User user;
+    private User itemOwner;
     private ItemDto requestItemDto;
     private ItemDto responseItemDto;
     private Item item;
@@ -59,6 +60,9 @@ class ItemServiceImplTest {
     void setUp() {
         user = new User();
         user.setId(1L);
+
+        itemOwner = new User();
+        itemOwner.setId(3L);
 
         User owner = new User();
         owner.setId(2L);
@@ -149,7 +153,6 @@ class ItemServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> itemService.updateItem(new ItemDto(), userId, itemId));
         verify(mockItemRepository, never()).save(any(Item.class));
     }
-
 
     @Test
     void deleteTest_whenInvoke_thenCheckInvocationOfIt() {

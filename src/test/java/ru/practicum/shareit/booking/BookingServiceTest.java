@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.BookingNotMatchException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.UnknownStateException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -125,6 +126,18 @@ public class BookingServiceTest {
         requestBookingDto.setStart(requestBookingDto.getEnd().plusMinutes(1));
 
         assertThrows(ValidationException.class, () -> bookingService.createBooking(bookerId, requestBookingDto));
+        verify(mockBookingRepository, never()).save(booking);
+    }
+
+    @Test
+    void createBookingTest_whenTimeDataNotValid_thenBookingNotMatchExceptionThrown() {
+        long bookerId = 2L;
+
+        when(mockItemRepository.existsById(anyLong())).thenReturn(true);
+        when(mockUserRepository.existsById(anyLong())).thenReturn(true);
+        when(mockItemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+
+        assertThrows(BookingNotMatchException.class, () -> bookingService.createBooking(bookerId, requestBookingDto));
         verify(mockBookingRepository, never()).save(booking);
     }
 
