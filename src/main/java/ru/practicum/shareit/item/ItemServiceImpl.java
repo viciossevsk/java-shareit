@@ -139,7 +139,7 @@ public class ItemServiceImpl implements ItemService {
         Collection<BookingShortDto> nextBookings = itemRepository.findNextBookings(items.values());
         Collection<BookingShortDto> lastBookings = itemRepository.findLastBookings(items.values());
 
-        List<ItemDto> uu = items.values().stream()
+        return items.values().stream()
                 .sorted(Comparator.comparing(Item::getId))
                 .map(item -> {
                     ItemDto itemDto = itemMapper.toItemDto(item);
@@ -157,8 +157,6 @@ public class ItemServiceImpl implements ItemService {
                     return itemDto;
                 })
                 .collect(Collectors.toList());
-
-        return uu;
     }
 
     @Override
