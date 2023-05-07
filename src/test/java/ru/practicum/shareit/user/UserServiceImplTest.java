@@ -20,30 +20,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Sql(value = "/testSchema.sql")
 public class UserServiceImplTest {
-    private final UserServiceImpl mockUserServiceImpl;
     UserDto requestUserDto;
     UserDto responseUserDto;
     UserDto responseUserDto1;
     long userId = 1L;
+    private final UserServiceImpl mockUserServiceImpl;
+
 
     @BeforeEach
     void setUp() {
-        requestUserDto = UserDto.builder()
-                .name("vasya")
-                .email("vasya@mail.ru")
-                .build();
+        requestUserDto = UserDto.builder().name("vasya").email("vasya@mail.ru").build();
 
-        responseUserDto = UserDto.builder()
-                .id(4L)
-                .name("vasya")
-                .email("vasya@mail.ru")
-                .build();
+        responseUserDto = UserDto.builder().id(4L).name("vasya").email("vasya@mail.ru").build();
 
-        responseUserDto1 = UserDto.builder()
-                .id(1L)
-                .name("user_1")
-                .email("user_1@mail.ru")
-                .build();
+        responseUserDto1 = UserDto.builder().id(1L).name("user_1").email("user_1@mail.ru").build();
     }
 
     @Test
@@ -60,12 +50,14 @@ public class UserServiceImplTest {
         List<UserDto> userDtos = mockUserServiceImpl.getAllUsers();
         assertEquals(3, userDtos.size());
     }
+
     @Test
     void getUserById_checkData() {
 
         UserDto userDto = mockUserServiceImpl.getUserById(userId);
         assertEquals(responseUserDto1.toString(), userDto.toString());
     }
+
     @Test
     void updateUser_checkData() {
         requestUserDto.setName("Update name");
@@ -73,14 +65,12 @@ public class UserServiceImplTest {
         UserDto userDto = mockUserServiceImpl.updateUser(requestUserDto, userId);
         assertEquals(requestUserDto.toString(), userDto.toString());
     }
+
     @Test
     void deleteUserById_checkData() {
-
         mockUserServiceImpl.deleteUserById(userId);
 
         List<UserDto> userDtos = mockUserServiceImpl.getAllUsers();
         assertEquals(2, userDtos.size());
     }
-
-
 }
