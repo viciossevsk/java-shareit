@@ -1,76 +1,110 @@
 package ru.practicum.shareit.user;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
-@Transactional
-@SpringBootTest
-@AutoConfigureTestDatabase
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
-@Sql(value = "/testSchema.sql")
-public class UserServiceImplTest {
-    UserDto requestUserDto;
-    UserDto responseUserDto;
-    UserDto responseUserDto1;
-    long userId = 1L;
-    private final UserServiceImpl mockUserServiceImpl;
-
+@ExtendWith(MockitoExtension.class)
+class UserServiceImplTest {
+    @Mock
+    private UserMapper mockUserMapper;
+    @Mock
+    private UserRepository mockUserRepository;
+    @InjectMocks
+    private UserServiceImpl userService;
+    private UserDto requestUserDto;
+    private UserDto responseUserDto;
+    private User user;
 
     @BeforeEach
     void setUp() {
-        requestUserDto = UserDto.builder().name("vasya").email("vasya@mail.ru").build();
+        requestUserDto = new UserDto();
+        requestUserDto.setName("John");
+        requestUserDto.setEmail("john@mail.com");
 
-        responseUserDto = UserDto.builder().id(4L).name("vasya").email("vasya@mail.ru").build();
+        responseUserDto = new UserDto();
+        responseUserDto.setId(1L);
+        responseUserDto.setName("John");
+        responseUserDto.setEmail("john@mail.com");
 
-        responseUserDto1 = UserDto.builder().id(1L).name("user_1").email("user_1@mail.ru").build();
+        user = new User();
+        user.setId(1L);
+        user.setName("John");
+        user.setEmail("john@mail.com");
+
     }
 
     @Test
-    void createUser_checkData() {
+    void createTest_whenInvoke_thenReturnUserDto() {
+        when(mockUserMapper.toUser(requestUserDto)).thenReturn(user);
+        when(mockUserRepository.save(user)).thenReturn(user);
+        when(mockUserMapper.toUserDto(user)).thenReturn(responseUserDto);
 
-        UserDto userDto = mockUserServiceImpl.createUser(requestUserDto);
-        assertEquals(responseUserDto, userDto);
+        UserDto actualDto = userService.createUser(requestUserDto);
 
+        assertEquals(responseUserDto, actualDto);
+        verify(mockUserRepository).save(user);
     }
 
     @Test
-    void getAllUsers_checkData() {
+    void readTest_whenUserFound_thenReturnUserDTO() {
+        long userId = 1L;
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(mockUserMapper.toUserDto(user)).thenReturn(responseUserDto);
 
-        List<UserDto> userDtos = mockUserServiceImpl.getAllUsers();
-        assertEquals(3, userDtos.size());
+        UserDto actualDto = userService.getUserById(userId);
+
+        assertEquals(responseUserDto, actualDto);
     }
 
     @Test
-    void getUserById_checkData() {
+    void readTest_whenUserNotFound_thenEntityNotFoundExceptionThrown() {
+        long userId = 1L;
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.empty());
 
-        UserDto userDto = mockUserServiceImpl.getUserById(userId);
-        assertEquals(responseUserDto1, userDto);
+        assertThrows(EntityNotFoundException.class, () -> userService.getUserById(userId));
     }
 
     @Test
-    void updateUser_checkData() {
-        requestUserDto.setName("Update name");
+    void updateTest_whenUserNotFound_thenEntityNotFoundExceptionThrown() {
+        long userId = 2L;
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.empty());
 
-        UserDto userDto = mockUserServiceImpl.updateUser(requestUserDto, userId);
-        assertEquals(requestUserDto, userDto);
+        assertThrows(EntityNotFoundException.class, () -> userService.updateUser(requestUserDto, userId));
+        verify(mockUserRepository, never()).save(user);
     }
 
     @Test
-    void deleteUserById_checkData() {
-        mockUserServiceImpl.deleteUserById(userId);
+    void deleteTest_whenInvoke_thenCheckInvocationOfIt() {
+        long userId = 1L;
 
-        List<UserDto> userDtos = mockUserServiceImpl.getAllUsers();
-        assertEquals(2, userDtos.size());
+        userService.deleteUserById(userId);
+
+        verify(mockUserRepository).deleteById(userId);
+    }
+
+    @Test
+    void findAllTest_whenInvoke_thenReturnListOfUsers() {
+        when(mockUserRepository.findAll()).thenReturn(List.of(user));
+        when(mockUserMapper.toUserDto(user)).thenReturn(responseUserDto);
+
+        Collection<UserDto> actualUsers = userService.getAllUsers();
+
+        assertEquals(List.of(responseUserDto), actualUsers);
     }
 }
