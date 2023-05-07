@@ -68,7 +68,7 @@ public class ItemServiceImplTest {
 
         ItemDto itemDto = mositemServiceImpl.getItemById(itemId, ownerId);
 
-        assertEquals(responseItemDto2.toString(), itemDto.toString());
+        assertEquals(responseItemDto2, itemDto);
 
     }
 
@@ -77,7 +77,7 @@ public class ItemServiceImplTest {
 
         ItemDto itemDto = mositemServiceImpl.updateItem(requestItemDto2, itemId, ownerId);
 
-        assertEquals(requestItemDto2.toString(), itemDto.toString());
+        assertEquals(requestItemDto2, itemDto);
 
     }
 

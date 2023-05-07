@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 
 @Builder
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "Bookings")
@@ -47,4 +49,20 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "booker_id", referencedColumnName = "id")
     private User booker;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Booking booking = (Booking) o;
+        return Objects.equals(id, booking.id)
+                && status == booking.status
+                && Objects.equals(start, booking.start)
+                && Objects.equals(end, booking.end);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, status, start, end);
+    }
 }

@@ -16,6 +16,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class ItemDto {
     private Long id;
     @Size(max = 20)

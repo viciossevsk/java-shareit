@@ -6,11 +6,11 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestWithItemsDto;
 import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = User.class)
+@Mapper(componentModel = "spring", uses = UserDto.class)
 public interface ItemRequestMapper {
     ItemRequestDto toItemRequestDto(ItemRequest itemRequest);
 

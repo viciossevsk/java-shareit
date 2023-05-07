@@ -59,7 +59,7 @@ public class ItemRequestServiceImplTest {
         ItemRequestDto itemRequestDto = mockItemRequestService.createItemRequest(requestorId, requestItemRequestDto3);
         itemRequestDto.setCreated(created);
 
-        assertEquals(responseItemRequestDto3.toString(), itemRequestDto.toString());
+        assertEquals(responseItemRequestDto3, itemRequestDto);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class ItemRequestServiceImplTest {
 
         ItemRequestDto itemRequestDto = mockItemRequestService.createItemRequest(requestorId, requestItemRequestDto3);
         itemRequestDto.setCreated(created);
-        assertEquals(responseItemRequestDto3.toString(), itemRequestDto.toString());
+        assertEquals(responseItemRequestDto3, itemRequestDto);
     }
 
     @Test
@@ -84,6 +84,6 @@ public class ItemRequestServiceImplTest {
         long itemRequestId = 1L;
 
         ItemRequestWithItemsDto itemRequestDto = mockItemRequestService.getItemRequestById(itemRequestId, requestorId);
-        assertEquals(responseItemRequestDto1.toString(), itemRequestDto.toString());
+        assertEquals(responseItemRequestDto1, itemRequestDto);
     }
 }

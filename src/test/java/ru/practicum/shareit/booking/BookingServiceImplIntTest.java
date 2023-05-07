@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Sql(value = "/testSchema.sql")
-public class BookingServiceImplTest {
+public class BookingServiceImplIntTest {
     private final BookingServiceImpl mockBookingServiceImpl;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
     LocalDateTime created = LocalDateTime.parse("2023-06-10T12:00:00", formatter);
@@ -133,7 +133,7 @@ public class BookingServiceImplTest {
 
         BookingDto bookingDto = mockBookingServiceImpl.createBooking(bookerId, requestBookingDto1);
 
-        assertEquals(responseBookingDto5.toString(), bookingDto.toString());
+        assertEquals(responseBookingDto5, bookingDto);
 
     }
 
@@ -144,14 +144,14 @@ public class BookingServiceImplTest {
 
         BookingDto bookingDto = mockBookingServiceImpl.approvingBooking(ownerId, bookingId, isApproved);
 
-        assertEquals(responseBookingDto1.toString(), bookingDto.toString());
+        assertEquals(responseBookingDto1, bookingDto);
     }
 
     @Test
     void getBooking_checkData() {
         BookingDto bookingDto = mockBookingServiceImpl.getBooking(bookingId, ownerId);
 
-        assertEquals(responseBookingDto1.toString(), bookingDto.toString());
+        assertEquals(responseBookingDto1, bookingDto);
     }
 
     @Test
@@ -187,24 +187,25 @@ public class BookingServiceImplTest {
 
         String state = "FUTURE";
         List<BookingDto> bookingDtos = mockBookingServiceImpl.getOwnerStatistics(ownerId, state, start, size);
-        assertEquals(List.of(responseBookingDto2, responseBookingDto1, responseBookingDto4).toString(),
-                     bookingDtos.toString());
+        assertEquals(List.of(responseBookingDto2, responseBookingDto1, responseBookingDto4),
+                     bookingDtos);
 
         state = "PAST";
         bookingDtos = mockBookingServiceImpl.getOwnerStatistics(ownerId, state, start, size);
-        assertEquals(List.of(responseBookingDto3).toString(), bookingDtos.toString());
+        assertEquals(List.of(responseBookingDto3), bookingDtos);
 
         state = "REJECTED";
         bookingDtos = mockBookingServiceImpl.getOwnerStatistics(ownerId, state, start, size);
-        assertEquals(List.of(responseBookingDto2).toString(), bookingDtos.toString());
+        assertEquals(List.of(responseBookingDto2), bookingDtos);
 
         state = "WAITING";
         bookingDtos = mockBookingServiceImpl.getOwnerStatistics(ownerId, state, start, size);
-        assertEquals(List.of(responseBookingDto1).toString(), bookingDtos.toString());
+        assertEquals(List.of(responseBookingDto1), bookingDtos);
 
         state = "ALL";
         bookingDtos = mockBookingServiceImpl.getOwnerStatistics(ownerId, state, start, size);
-        assertEquals(List.of(responseBookingDto2, responseBookingDto1, responseBookingDto4, responseBookingDto3).toString(), bookingDtos.toString());
+        assertEquals(List.of(responseBookingDto2, responseBookingDto1, responseBookingDto4, responseBookingDto3),
+                     bookingDtos);
 
         state = "CURRENT";
         bookingDtos = mockBookingServiceImpl.getOwnerStatistics(ownerId, state, start, size);

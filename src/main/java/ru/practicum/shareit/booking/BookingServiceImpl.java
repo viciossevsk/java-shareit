@@ -122,7 +122,9 @@ public class BookingServiceImpl implements BookingService {
 
         Set<Booking> bookings = bookingRepository.findBookingsAndFetchAllEntitiesOrderByBooker(bookingIds, page);
 
-        return getBookingStatistics(bookings, state);
+        List<BookingDto> yu = getBookingStatistics(bookings, state);
+
+        return yu;
     }
 
     private User getUserById(Long userId) {

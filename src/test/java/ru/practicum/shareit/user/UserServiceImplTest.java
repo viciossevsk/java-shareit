@@ -40,7 +40,7 @@ public class UserServiceImplTest {
     void createUser_checkData() {
 
         UserDto userDto = mockUserServiceImpl.createUser(requestUserDto);
-        assertEquals(responseUserDto.toString(), userDto.toString());
+        assertEquals(responseUserDto, userDto);
 
     }
 
@@ -55,7 +55,7 @@ public class UserServiceImplTest {
     void getUserById_checkData() {
 
         UserDto userDto = mockUserServiceImpl.getUserById(userId);
-        assertEquals(responseUserDto1.toString(), userDto.toString());
+        assertEquals(responseUserDto1, userDto);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class UserServiceImplTest {
         requestUserDto.setName("Update name");
 
         UserDto userDto = mockUserServiceImpl.updateUser(requestUserDto, userId);
-        assertEquals(requestUserDto.toString(), userDto.toString());
+        assertEquals(requestUserDto, userDto);
     }
 
     @Test

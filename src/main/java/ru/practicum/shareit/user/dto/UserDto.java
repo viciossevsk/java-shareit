@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {

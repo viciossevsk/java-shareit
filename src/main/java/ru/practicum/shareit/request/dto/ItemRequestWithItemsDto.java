@@ -15,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class ItemRequestWithItemsDto {
     @NotNull
     private Long id;

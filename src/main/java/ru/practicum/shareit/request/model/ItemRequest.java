@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,6 +14,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
+@EqualsAndHashCode
 @Table(name = "requests")
 public class ItemRequest {
 
