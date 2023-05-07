@@ -1,89 +1,130 @@
 package ru.practicum.shareit.request;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.exception.EntityNotFoundException;
+import ru.practicum.shareit.exception.UserNotFoundException;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.dto.ItemRequestWithItemsDto;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
-@Transactional
-@SpringBootTest
-@AutoConfigureTestDatabase
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
-@Sql(value = "/testSchema.sql")
-public class ItemRequestServiceImplTest {
-    private final ItemRequestService mockItemRequestService;
-    ItemRequestWithItemsDto responseItemRequestDto1;
-    ItemRequestDto requestItemRequestDto3;
-    ItemRequestDto responseItemRequestDto3;
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-    long requestorId = 1L;
-    LocalDateTime created = LocalDateTime.now();
-    int start = 0;
-    int size = 10;
+@ExtendWith(MockitoExtension.class)
+class ItemRequestServiceImplTest {
+    @Mock
+    private ItemRequestRepository mockItemRequestRepository;
+    @Mock
+    private UserRepository mockUserRepository;
+    @Mock
+    private ItemRequestMapper mockItemRequestMapper;
+    @Mock
+    private ItemRepository mockItemRepository;
+    @InjectMocks
+    private ItemRequestServiceImpl itemRequestService;
+    private ItemRequest itemRequest;
+    private User user;
+    private Item item;
+    private ItemDto itemDto;
 
     @BeforeEach
     void setUp() {
-        requestItemRequestDto3 = ItemRequestDto.builder()
-                .description("Хотел бы воспользоваться щёткой для обуви")
-                .build();
+        user = new User();
+        user.setId(1L);
+        user.setName("John");
+        user.setEmail("john@mail.com");
 
-        responseItemRequestDto3 = ItemRequestDto.builder()
-                .id(3L)
-                .description("Хотел бы воспользоваться щёткой для обуви")
-                .created(created)
-                .build();
+        item = new Item();
+        item.setId(1L);
+        item.setName("Item1");
+        item.setDescription("Item1 Description");
+        item.setAvailable(true);
+        item.setRequestId(1L);
 
-        responseItemRequestDto1 = ItemRequestWithItemsDto.builder()
+        itemRequest = new ItemRequest();
+        itemRequest.setId(1L);
+
+        itemDto = ItemDto.builder()
                 .id(1L)
-                .description("description")
-                .created(LocalDateTime.parse("2023-06-10T12:00:00", formatter))
-                .items(List.of())
                 .build();
     }
 
     @Test
-    void createTest_checkData() {
+    void createTest_whenDataValid_thenReturnItemRequestDto() {
+        long userId = 1L;
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(mockItemRequestMapper.toItemRequest(any(ItemRequestDto.class))).thenReturn(new ItemRequest());
+        when(mockItemRequestRepository.save(new ItemRequest())).thenReturn(new ItemRequest());
+        when(mockItemRequestMapper.toItemRequestDto(new ItemRequest())).thenReturn(new ItemRequestDto());
 
-        ItemRequestDto itemRequestDto = mockItemRequestService.createItemRequest(requestorId, requestItemRequestDto3);
-        itemRequestDto.setCreated(created);
+        ItemRequestDto itemRequestDto = itemRequestService.createItemRequest(userId, new ItemRequestDto());
 
-        assertEquals(responseItemRequestDto3, itemRequestDto);
+        assertEquals(new ItemRequestDto(), itemRequestDto);
+        verify(mockItemRequestRepository).save(any(ItemRequest.class));
     }
 
     @Test
-    void getAllItemRequestByOwner_checkData() {
+    void createTest_whenUserNotFound_thenUserNotFoundExceptionThrown() {
+        long userId = 1L;
 
-        List<ItemRequestWithItemsDto> itemRequestDto =
-                mockItemRequestService.getItemRequestOtherRequestor(requestorId, start, size);
-
-        assertEquals(1, itemRequestDto.size());
+        assertThrows(UserNotFoundException.class, () -> itemRequestService.createItemRequest(userId,
+                                                                                             new ItemRequestDto()));
+        verify(mockItemRequestRepository, never()).save(any(ItemRequest.class));
     }
 
     @Test
-    void getItemRequestOtherRequestor_checkData() {
+    void readTest_whenUserNotFound_thenEntityNotFoundExceptionThrown() {
+        long userId = 1L;
+        long requestId = 1L;
+        when(mockUserRepository.existsById(anyLong())).thenReturn(false);
 
-        ItemRequestDto itemRequestDto = mockItemRequestService.createItemRequest(requestorId, requestItemRequestDto3);
-        itemRequestDto.setCreated(created);
-        assertEquals(responseItemRequestDto3, itemRequestDto);
+        assertThrows(EntityNotFoundException.class, () -> itemRequestService.getItemRequestById(requestId, userId));
+        verify(mockItemRequestMapper, never()).toItemRequestWithItemsDto(anyList(), any(ItemRequest.class));
     }
 
     @Test
-    void getItemRequestById_checkData() {
-        long itemRequestId = 1L;
+    void readTest_whenItemRequestNotFound_thenEntityNotFoundExceptionThrown() {
+        long userId = 1L;
+        long requestId = 1L;
+        when(mockUserRepository.existsById(anyLong())).thenReturn(true);
+        when(mockItemRequestRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        ItemRequestWithItemsDto itemRequestDto = mockItemRequestService.getItemRequestById(itemRequestId, requestorId);
-        assertEquals(responseItemRequestDto1, itemRequestDto);
+        assertThrows(EntityNotFoundException.class, () -> itemRequestService.getItemRequestById(requestId, userId));
+        verify(mockItemRequestMapper, never()).toItemRequestWithItemsDto(anyList(), any(ItemRequest.class));
+    }
+
+    @Test
+    void findAllRequestsOfUserTest_whenUserNotFound_thenEntityNotFoundExceptionThrown() {
+        long userId = 1L;
+        when(mockUserRepository.existsById(userId)).thenReturn(false);
+
+        assertThrows(EntityNotFoundException.class, () -> itemRequestService.getAllItemRequestByOwner(userId));
+        verify(mockItemRequestMapper, never()).toItemRequestWithItemsDto(anyList(), eq(itemRequest));
+    }
+
+    @Test
+    void findAllRequestsOfOthersTest_whenUserNotFound_thenEntityNotFoundExceptionThrown() {
+        int from = 0;
+        int size = 20;
+        Long userId = 1L;
+        when(mockUserRepository.existsById(anyLong())).thenReturn(false);
+
+        assertThrows(EntityNotFoundException.class, () -> itemRequestService.getItemRequestOtherRequestor(userId,
+                                                                                                          from, size));
+        verify(mockItemRequestMapper, never()).toItemRequestWithItemsDto(anyList(), any(ItemRequest.class));
     }
 }

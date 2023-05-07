@@ -46,8 +46,8 @@ public class BookingServiceTest {
     private User user, owner;
     private Item item;
     private Booking booking;
-    private BookingDto RequestBookingDto;
-    private BookingDto ResponseBookingDto;
+    private BookingDto requestBookingDto;
+    private BookingDto responseBookingDto;
 
     @BeforeEach
     void setUp() {
@@ -76,16 +76,16 @@ public class BookingServiceTest {
         booking.setItem(item);
         booking.setBooker(user);
 
-        RequestBookingDto = new BookingDto();
-        RequestBookingDto.setItemId(1L);
-        RequestBookingDto.setStart(LocalDateTime.now().minusDays(2));
-        RequestBookingDto.setEnd(LocalDateTime.now().minusDays(1));
+        requestBookingDto = new BookingDto();
+        requestBookingDto.setItemId(1L);
+        requestBookingDto.setStart(LocalDateTime.now().minusDays(2));
+        requestBookingDto.setEnd(LocalDateTime.now().minusDays(1));
 
-        ResponseBookingDto = new BookingDto();
-        ResponseBookingDto.setItemId(1L);
-        ResponseBookingDto.setStart(LocalDateTime.now().minusDays(2));
-        ResponseBookingDto.setEnd(LocalDateTime.now().minusDays(1));
-        ResponseBookingDto.setStatus(BookingStatus.APPROVED);
+        responseBookingDto = new BookingDto();
+        responseBookingDto.setItemId(1L);
+        responseBookingDto.setStart(LocalDateTime.now().minusDays(2));
+        responseBookingDto.setEnd(LocalDateTime.now().minusDays(1));
+        responseBookingDto.setStatus(BookingStatus.APPROVED);
     }
 
     @Test
@@ -96,11 +96,11 @@ public class BookingServiceTest {
         when(mockItemRepository.findById(anyLong())).thenReturn(Optional.of(item));
         when(mockUserRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(mockBookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
-        when(mockBookingMapper.toBooking(RequestBookingDto)).thenReturn(booking);
+        when(mockBookingMapper.toBooking(requestBookingDto)).thenReturn(booking);
         when(mockBookingRepository.save(booking)).thenReturn(booking);
         when(mockBookingMapper.toBookingDto(booking)).thenReturn(new BookingDto());
 
-        BookingDto bookingDto = bookingService.createBooking(bookerId, RequestBookingDto);
+        BookingDto bookingDto = bookingService.createBooking(bookerId, requestBookingDto);
 
         assertEquals(new BookingDto(), bookingDto);
         verify(mockBookingRepository).save(booking);
@@ -114,7 +114,7 @@ public class BookingServiceTest {
         when(mockItemRepository.existsById(anyLong())).thenReturn(true);
         when(mockItemRepository.findById(anyLong())).thenReturn(Optional.of(item));
 
-        assertThrows(ValidationException.class, () -> bookingService.createBooking(bookerId, RequestBookingDto));
+        assertThrows(ValidationException.class, () -> bookingService.createBooking(bookerId, requestBookingDto));
         verify(mockBookingRepository, never()).save(booking);
     }
 
@@ -122,9 +122,9 @@ public class BookingServiceTest {
     @Test
     void createBookingTest_whenTimeDataNotValid_thenValidationExceptionThrown() {
         long bookerId = 1L;
-        RequestBookingDto.setStart(RequestBookingDto.getEnd().plusMinutes(1));
+        requestBookingDto.setStart(requestBookingDto.getEnd().plusMinutes(1));
 
-        assertThrows(ValidationException.class, () -> bookingService.createBooking(bookerId, RequestBookingDto));
+        assertThrows(ValidationException.class, () -> bookingService.createBooking(bookerId, requestBookingDto));
         verify(mockBookingRepository, never()).save(booking);
     }
 
@@ -135,17 +135,17 @@ public class BookingServiceTest {
         booking.setStatus(BookingStatus.WAITING);
         when(mockBookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
-        when(mockBookingMapper.toBookingDto(booking)).thenReturn(ResponseBookingDto);
+        when(mockBookingMapper.toBookingDto(booking)).thenReturn(responseBookingDto);
 
         BookingDto bookingDto = bookingService.approvingBooking(ownerId, bookingId, true);
 
-        assertEquals(ResponseBookingDto, bookingDto);
+        assertEquals(responseBookingDto, bookingDto);
 
         booking.setStatus(BookingStatus.WAITING);
-        ResponseBookingDto.setStatus(BookingStatus.REJECTED);
+        responseBookingDto.setStatus(BookingStatus.REJECTED);
         bookingDto = bookingService.approvingBooking(ownerId, bookingId, false);
 
-        assertEquals(ResponseBookingDto, bookingDto);
+        assertEquals(responseBookingDto, bookingDto);
     }
 
     @Test
@@ -183,15 +183,15 @@ public class BookingServiceTest {
         long bookingId = 1L;
         long userId = 1L;
         when(mockBookingRepository.findById(bookingId)).thenReturn(Optional.of(booking));
-        when(mockBookingMapper.toBookingDto(booking)).thenReturn(ResponseBookingDto);
+        when(mockBookingMapper.toBookingDto(booking)).thenReturn(responseBookingDto);
 
         BookingDto bookingDto = bookingService.getBooking(bookingId, userId);
 
-        assertEquals(ResponseBookingDto, bookingDto);
+        assertEquals(responseBookingDto, bookingDto);
 
         userId = 2L;
         bookingDto = bookingService.getBooking(bookingId, userId);
-        assertEquals(ResponseBookingDto, bookingDto);
+        assertEquals(responseBookingDto, bookingDto);
     }
 
     @Test
@@ -221,13 +221,13 @@ public class BookingServiceTest {
         PageRequest page = getPage(start, size);
 
         when(mockUserRepository.findById(bookerId)).thenReturn(Optional.of(user));
-        when(mockBookingMapper.toBookingDto(booking)).thenReturn(ResponseBookingDto);
+        when(mockBookingMapper.toBookingDto(booking)).thenReturn(responseBookingDto);
 
         when(mockBookingRepository.findBookingsAndFetchAllEntitiesOrderByBooker(Set.of(1L), page)).thenReturn(Set.of(booking));
 
         String state = "PAST";
         List<BookingDto> bookingDtos = bookingService.getBookerStatistics(bookerId, state, start, size);
-        assertEquals(List.of(ResponseBookingDto), bookingDtos);
+        assertEquals(List.of(responseBookingDto), bookingDtos);
 
         state = "FUTURE";
         bookingDtos = bookingService.getBookerStatistics(bookerId, state, start, size);
@@ -247,7 +247,7 @@ public class BookingServiceTest {
 
         state = "ALL";
         bookingDtos = bookingService.getBookerStatistics(bookerId, state, start, size);
-        assertEquals(List.of(ResponseBookingDto), bookingDtos);
+        assertEquals(List.of(responseBookingDto), bookingDtos);
     }
 
     @Test
@@ -282,11 +282,11 @@ public class BookingServiceTest {
         int from = 0;
         int size = 20;
         long ownerId = 2L;
-        ResponseBookingDto = new BookingDto();
-        ResponseBookingDto.setItemId(1L);
-        ResponseBookingDto.setStart(LocalDateTime.now().minusDays(2));
-        ResponseBookingDto.setEnd(LocalDateTime.now().minusDays(1));
-        ResponseBookingDto.setStatus(BookingStatus.APPROVED);
+        responseBookingDto = new BookingDto();
+        responseBookingDto.setItemId(1L);
+        responseBookingDto.setStart(LocalDateTime.now().minusDays(2));
+        responseBookingDto.setEnd(LocalDateTime.now().minusDays(1));
+        responseBookingDto.setStatus(BookingStatus.APPROVED);
 
 
         owner.setItems(Set.of(item));

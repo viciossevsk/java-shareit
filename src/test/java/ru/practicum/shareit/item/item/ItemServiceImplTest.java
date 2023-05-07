@@ -50,8 +50,8 @@ class ItemServiceImplTest {
     @InjectMocks
     private ItemServiceImpl itemService;
     private User user;
-    private ItemDto RequestItemDto;
-    private ItemDto ResponseItemDto;
+    private ItemDto requestItemDto;
+    private ItemDto responseItemDto;
     private Item item;
     private Booking booking;
 
@@ -75,13 +75,13 @@ class ItemServiceImplTest {
         booking.setItem(item);
         booking.setBooker(user);
 
-        RequestItemDto = ItemDto.builder()
+        requestItemDto = ItemDto.builder()
                 .name("name")
                 .available(true)
                 .description("Description")
                 .build();
 
-        ResponseItemDto = ItemDto.builder()
+        responseItemDto = ItemDto.builder()
                 .id(1L)
                 .name("name")
                 .available(true)
@@ -99,7 +99,7 @@ class ItemServiceImplTest {
     void createTest_whenOwnerNotFound_thenEntityNotFoundExceptionThrown() {
         when(mockUserRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> itemService.createItem(RequestItemDto, 1L));
+        assertThrows(EntityNotFoundException.class, () -> itemService.createItem(requestItemDto, 1L));
         verify(mockItemRepository, never()).save(any(Item.class));
     }
 
@@ -108,11 +108,11 @@ class ItemServiceImplTest {
         long itemId = 1L;
         long ownerId = 2L;
         when(mockItemRepository.findById(anyLong())).thenReturn(Optional.of(item));
-        when(mockItemMapper.toItemDto(any(Item.class))).thenReturn(RequestItemDto);
+        when(mockItemMapper.toItemDto(any(Item.class))).thenReturn(requestItemDto);
 
         ItemDto itemDto = itemService.getItemById(itemId, ownerId);
 
-        assertEquals(RequestItemDto, itemDto);
+        assertEquals(requestItemDto, itemDto);
         verify(mockCommentRepository, times(1)).findCommentDtosByItem(any(Item.class));
     }
 
@@ -133,12 +133,12 @@ class ItemServiceImplTest {
         when(mockItemRepository.findById(anyLong())).thenReturn(Optional.of(item));
         when(mockItemRepository.save(any(Item.class))).thenReturn(item);
         when(mockUserRepository.findById(anyLong())).thenReturn(Optional.of(user));
-        when(mockItemMapper.toItemDto(any(Item.class))).thenReturn(ResponseItemDto);
+        when(mockItemMapper.toItemDto(any(Item.class))).thenReturn(responseItemDto);
         when(mockCommentRepository.findCommentDtosByItem(any(Item.class))).thenReturn(Set.of());
 
-        ItemDto itemDtoActual = itemService.updateItem(RequestItemDto, ownerId, itemId);
+        ItemDto itemDtoActual = itemService.updateItem(requestItemDto, ownerId, itemId);
 
-        assertEquals(ResponseItemDto, itemDtoActual);
+        assertEquals(responseItemDto, itemDtoActual);
     }
 
     @Test
