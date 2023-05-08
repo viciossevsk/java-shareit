@@ -105,7 +105,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     private boolean isUserExistsById(Long userId) {
-        return (!userRepository.existsById(userId));
+        return !userRepository.existsById(userId);
     }
 
 }

@@ -28,14 +28,13 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemDto getItemById(@RequestHeader(USER_ID_HEADER) Long ownerId,
-                               @PathVariable("id") Long itemId) {
+    public ItemDto getItemById(@RequestHeader(USER_ID_HEADER) Long ownerId, @PathVariable("id") Long itemId) {
         return itemService.getItemById(itemId, ownerId);
     }
 
     @GetMapping
-    public List<ItemDto> getAllItemsByOwner(@RequestHeader(USER_ID_HEADER) Long ownerId,
-                                            @RequestParam(required = false, defaultValue = "0") Integer start,
+    public List<ItemDto> getAllItemsByOwner(@RequestHeader(USER_ID_HEADER) Long ownerId, @RequestParam(required =
+            false, defaultValue = "0") Integer start,
                                             @RequestParam(required = false, defaultValue = "20") Integer size) {
         return itemService.getAllItemsByOwner(ownerId, start, size);
     }
@@ -46,17 +45,15 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItemByText(@RequestParam String text,
-                                          @RequestParam(required = false, defaultValue = "0") Integer start,
-                                          @RequestParam(required = false, defaultValue = "20") Integer size) {
+    public List<ItemDto> searchItemByText(@RequestParam String text, @RequestParam(required = false, defaultValue =
+            "0") Integer start, @RequestParam(required = false, defaultValue = "20") Integer size) {
         return itemService.searchItemByText(text, start, size);
     }
 
     @PostMapping("/{id}/comment")
     public CommentDto createComment(@RequestHeader(USER_ID_HEADER) Long bookerId,
                                     @PathVariable(value = "id") Long itemId,
-                                    @Valid @RequestBody CommentDto commentDto
-    ) {
+                                    @Valid @RequestBody CommentDto commentDto) {
         return itemService.createComment(itemId, bookerId, commentDto);
     }
 
