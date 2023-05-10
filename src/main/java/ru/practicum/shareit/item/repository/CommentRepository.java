@@ -7,7 +7,6 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
@@ -31,5 +30,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                     " from Comment as c" +
                     " where item in ?1"
     )
-    List<CommentDto> findCommentDtosByItem(Item item);
+    Set<CommentDto> findCommentDtosByItem(Item item);
 }

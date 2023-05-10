@@ -16,6 +16,7 @@ import java.util.Objects;
 @Builder
 @ToString
 @NoArgsConstructor
+@EqualsAndHashCode
 @AllArgsConstructor
 @Table(name = "comments")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})

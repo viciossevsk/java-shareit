@@ -16,6 +16,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "Items", indexes = {
@@ -40,11 +41,8 @@ public class Item {
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
 
-//    @ToString.Exclude
-//    @JsonBackReference(value = "owner")
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "request_id", referencedColumnName = "id")
-//    private ItemRequest itemRequest;
+    @Column(name = "request_id")
+    private Long requestId;
 
     @ToString.Exclude
     @JsonManagedReference(value = "comment")

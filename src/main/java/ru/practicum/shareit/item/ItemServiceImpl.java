@@ -2,12 +2,12 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.exception.EntityNotFoundException;
-import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -102,9 +102,6 @@ public class ItemServiceImpl implements ItemService {
         Item item = getItemByItemId(itemId);
         item.setOwner(owner);
 
-        if (!owner.equals(item.getOwner())) {
-            throw new ItemNotFoundException(String.format(ITEM_OWNER_ID_DIFFERENT_OWNER_ID, itemId));
-        }
         if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
         }
@@ -126,8 +123,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> getAllItemsByOwner(Long ownerId) {
-        Map<Long, Item> items = itemRepository.findAllByOwnerId(ownerId).stream()
+    public List<ItemDto> getAllItemsByOwner(Long ownerId, Integer start, Integer size) {
+        PageRequest page = getPage(start, size);
+
+        Map<Long, Item> items = itemRepository.findAllByOwnerId(ownerId, page).stream()
                 .collect(Collectors.toMap(Item::getId, Function.identity()));
 
         Map<Long, List<CommentDto>> commentDtos = commentRepository.findCommentDtosByItems(items.values()).stream()
@@ -148,8 +147,9 @@ public class ItemServiceImpl implements ItemService {
                                                    .filter(bookingShort -> bookingShort.getItemId().equals(itemDto.getId()))
                                                    .findFirst()
                                                    .orElse(null));
-                    itemDto.setComments(commentDtos.get(itemDto.getId()));
-
+                    if (commentDtos.size() > 0) {
+                        itemDto.setComments(commentDtos.get(itemDto.getId()).stream().collect(Collectors.toSet()));
+                    }
                     return itemDto;
                 })
                 .collect(Collectors.toList());
@@ -163,13 +163,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> searchItemByText(String text) {
+    public List<ItemDto> searchItemByText(String text, Integer start, Integer size) {
         if (text == null || text.isBlank()) {
             return List.of();
         }
         final String query = "%" + text + "%";
 
-        return itemRepository.findAllByNameIsLikeIgnoreCaseOrDescriptionIsLikeIgnoreCaseAndAvailableTrue(query, query)
+        PageRequest page = getPage(start, size);
+
+        return itemRepository.findAllByNameIsLikeIgnoreCaseOrDescriptionIsLikeIgnoreCaseAndAvailableTrue(query, query, page)
                 .stream()
                 .map(itemMapper::toItemDto)
                 .collect(Collectors.toList());
