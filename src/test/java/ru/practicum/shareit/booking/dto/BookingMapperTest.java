@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking2.dto;
+package ru.practicum.shareit.booking.dto;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import ru.practicum.shareit.booking2.BookingMapper;
-import ru.practicum.shareit.booking2.BookingStatus;
-import ru.practicum.shareit.booking2.model.Booking;
-import ru.practicum.shareit.booking2.repository.BookingRepository;
+import ru.practicum.shareit.booking.BookingMapper;
+import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;

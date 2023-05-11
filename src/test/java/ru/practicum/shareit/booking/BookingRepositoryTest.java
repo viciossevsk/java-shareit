@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking2;
+package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -8,8 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking2.model.Booking;
-import ru.practicum.shareit.booking2.repository.BookingRepository;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Set;

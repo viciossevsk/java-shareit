@@ -1,7 +1,7 @@
-package ru.practicum.shareit.booking2.model;
+package ru.practicum.shareit.booking.model;
 
 import org.junit.jupiter.api.Test;
-import ru.practicum.shareit.booking2.BookingStatus;
+import ru.practicum.shareit.booking.BookingStatus;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
