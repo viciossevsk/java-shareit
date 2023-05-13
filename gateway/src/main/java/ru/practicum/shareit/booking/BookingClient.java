@@ -26,36 +26,36 @@ public class BookingClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> bookItem(long userId, BookingDto requestDto) {
-        return post("", userId, requestDto);
+    public ResponseEntity<Object> bookItem(long userId, BookingDto bookingDto) {
+        return post("", userId, bookingDto);
     }
 
-    public ResponseEntity<Object> approvingBooking(Long ownerId, Long bookingId, Boolean isApproved) {
+    public ResponseEntity<Object> approvingBooking(long ownerId, long bookingId, Boolean isApproved) {
         Map<String, Object> parameters = Map.of(
                 "approved", isApproved
         );
         return patch("/" + bookingId + "?approved={approved}", ownerId, parameters);
     }
 
-    public ResponseEntity<Object> getBooking(long userId, Long bookingId) {
+    public ResponseEntity<Object> getBooking(long bookingId, long userId) {
         return get("/" + bookingId, userId);
     }
 
-    public ResponseEntity<Object> getBookerStatistics(long userId, String state, Integer from, Integer size) {
+    public ResponseEntity<Object> getBookerStatistics(long bookerId, String state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "state", state,
                 "from", from,
                 "size", size
         );
-        return get("?state={state}&from={from}&size={size}", userId, parameters);
+        return get("?state={state}&from={from}&size={size}", bookerId, parameters);
     }
 
-    public ResponseEntity<Object> getOwnerStatistics(long userId, String state, Integer from, Integer size) {
+    public ResponseEntity<Object> getOwnerStatistics(long ownerId, String state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "state", state,
                 "from", from,
                 "size", size
         );
-        return get("/owner?state={state}&from={from}&size={size}", userId, parameters);
+        return get("/owner?state={state}&from={from}&size={size}", ownerId, parameters);
     }
 }

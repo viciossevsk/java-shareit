@@ -102,9 +102,12 @@ public class BookingServiceImpl implements BookingService {
 
         PageRequest page = getPage(start, size);
 
-        Set<Long> bookingIds = booker.getBookings().stream().map(Booking::getId).collect(Collectors.toSet());
-
-        Set<Booking> bookings = bookingRepository.findBookingsAndFetchAllEntitiesOrderByBooker(bookingIds, page);
+//        Set<Long> bookingIds = booker.getBookings().stream().map(Booking::getId).collect(Collectors.toSet());
+//
+//        Set<Booking> bookings = bookingRepository.findBookingsAndFetchAllEntitiesOrderByBooker(bookingIds, page);
+//
+//        return getBookingStatistics(bookings, state);
+        Set<Booking> bookings = userRepository.findBookingsOfUserAndFetchAllEntities(booker, page);
 
         return getBookingStatistics(bookings, state);
 
@@ -122,9 +125,7 @@ public class BookingServiceImpl implements BookingService {
 
         Set<Booking> bookings = bookingRepository.findBookingsAndFetchAllEntitiesOrderByBooker(bookingIds, page);
 
-        List<BookingDto> yu = getBookingStatistics(bookings, state);
-
-        return yu;
+        return getBookingStatistics(bookings, state);
     }
 
     private User getUserById(Long userId) {
