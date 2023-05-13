@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 
 import javax.validation.Valid;
-
 import java.time.LocalDateTime;
 
-import static java.time.LocalDateTime.*;
 import static ru.practicum.shareit.otherFunction.AddvansedFunctions.USER_ID_HEADER;
 
 @RestController

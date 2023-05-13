@@ -5,12 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.BookingClient;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static ru.practicum.shareit.otherFunction.AddvansedFunctions.USER_ID_HEADER;
 

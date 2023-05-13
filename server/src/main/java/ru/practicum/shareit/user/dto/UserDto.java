@@ -2,7 +2,6 @@ package ru.practicum.shareit.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-import ru.practicum.shareit.user.UserController;
 
 @Builder
 @AllArgsConstructor

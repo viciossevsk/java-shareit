@@ -19,9 +19,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "Items", indexes = {
-        @Index(name = "idx_item_id", columnList = "id")
-})
+@Table(name = "Items", indexes = {@Index(name = "idx_item_id", columnList = "id")})
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,10 +52,7 @@ public class Item {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return available == item.available
-                && Objects.equals(id, item.id)
-                && Objects.equals(name, item.name)
-                && Objects.equals(description, item.description);
+        return available == item.available && Objects.equals(id, item.id) && Objects.equals(name, item.name) && Objects.equals(description, item.description);
     }
 
     @Override

@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.practicum.shareit.item.ItemController;
 
 import java.time.LocalDateTime;
 

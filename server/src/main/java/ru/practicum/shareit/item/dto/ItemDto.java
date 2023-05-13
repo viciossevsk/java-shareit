@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.*;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
-import ru.practicum.shareit.item.ItemController;
 
 import java.util.Set;
 
