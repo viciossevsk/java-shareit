@@ -102,11 +102,6 @@ public class BookingServiceImpl implements BookingService {
 
         PageRequest page = getPage(start, size);
 
-//        Set<Long> bookingIds = booker.getBookings().stream().map(Booking::getId).collect(Collectors.toSet());
-//
-//        Set<Booking> bookings = bookingRepository.findBookingsAndFetchAllEntitiesOrderByBooker(bookingIds, page);
-//
-//        return getBookingStatistics(bookings, state);
         Set<Booking> bookings = userRepository.findBookingsOfUserAndFetchAllEntities(booker, page);
 
         return getBookingStatistics(bookings, state);

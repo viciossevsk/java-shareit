@@ -123,8 +123,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> getAllItemsByOwner(Long ownerId, Integer start, Integer size) {
-        PageRequest page = getPage(start, size);
+    public List<ItemDto> getAllItemsByOwner(Long ownerId, Integer from, Integer size) {
+        PageRequest page = getPage(from, size);
 
         Map<Long, Item> items = itemRepository.findAllByOwnerId(ownerId, page).stream()
                 .collect(Collectors.toMap(Item::getId, Function.identity()));
@@ -163,7 +163,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> searchItemByText(String text, Long userId, Integer start, Integer size) {
+    public List<ItemDto> searchItemByText(String text, Long userId, Integer from, Integer size) {
         if (isUserExistsById(userId)) {
             throw new EntityNotFoundException(String.format(MISTAKEN_USER_ID, userId));
         }
@@ -173,7 +173,7 @@ public class ItemServiceImpl implements ItemService {
         }
         final String query = "%" + text + "%";
 
-        PageRequest page = getPage(start, size);
+        PageRequest page = getPage(from, size);
 
         return itemRepository.findAllByNameIsLikeIgnoreCaseOrDescriptionIsLikeIgnoreCaseAndAvailableTrue(query, query, page)
                 .stream()

@@ -12,11 +12,11 @@ public interface ItemService {
 
     ItemDto updateItem(ItemDto itemDto, Long itemId, Long ownerId);
 
-    List<ItemDto> getAllItemsByOwner(Long ownerId, Integer start, Integer size);
+    List<ItemDto> getAllItemsByOwner(Long ownerId, Integer from, Integer size);
 
     void deleteItem(Long itemId);
 
-    List<ItemDto> searchItemByText(String text, Long userId, Integer start, Integer size);
+    List<ItemDto> searchItemByText(String text, Long userId, Integer from, Integer size);
 
     CommentDto createComment(Long itemId, Long bookerId, CommentDto commentDto);
 }
